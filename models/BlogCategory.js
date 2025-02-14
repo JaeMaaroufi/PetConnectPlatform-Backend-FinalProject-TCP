@@ -2,7 +2,13 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const BlogCategorySchema = new Schema({
-  type: String,
+  name: { type: String },
+  blogs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Blog",
+    },
+  ],
 });
 
 const BlogCategory = model("BlogCategory", BlogCategorySchema);

@@ -2,47 +2,23 @@ const express = require("express");
 const router = express.Router();
 const {
   getAllUsers,
-  registerUser,
-  login,
-  getStoreProfileBystoreName,
   updateUserData,
-  updateProfileData,
-  updateStoreData,
-  deleteProfileData,
-  getAllProfiles,
-  getAllStores,
+  deleteUserData,
+  getUserById,
 } = require("../controllers/user.controller");
 
-const { authenticateUser, authenticateToken } = require("../middleware/auth");
-
-//to get all profiles data.
-router.get("/", getAllProfiles);
-
-//to get all stores data.
-router.get("/stores", getAllStores);
+const { authenticateToken } = require("../middleware/auth");
 
 //to get all users data.
-router.get("/users", getAllUsers);
+router.get("/", getAllUsers);
 
-//to get profile based on storename | query: key = storeName
-router.get("/search", getStoreProfileBystoreName);
-
-//for the user to add an account.
-router.post("/sign-up", registerUser);
-
-//for the user to login to their account.
-router.post("/login", authenticateUser, login);
-
-//for the user to update the profile data.
-router.put("/:id", authenticateToken, updateProfileData);
+//get user based on query key = id
+router.get("/search", getUserById);
 
 //for the user to update the user data.
-router.put("/stores/:id", authenticateToken, updateStoreData);
+router.put("/:id", authenticateToken, updateUserData);
 
-//for the user to update the store data.
-router.put("/users/:id", authenticateToken, updateUserData);
-
-//for the user to delete their profile.
-router.delete("/:id", authenticateToken, deleteProfileData);
+//for the user to delete their own account, and if they have a store assosicated with it, it would be deleted too.
+router.delete("/:id", authenticateToken, deleteUserData);
 
 module.exports = router;

@@ -1,4 +1,3 @@
-const Profile = require("../models/Profile");
 const User = require("../models/User");
 const Store = require("../models/Store");
 const jwt = require("jsonwebtoken");
@@ -8,14 +7,14 @@ const authenticateUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const foundProfile = await Profile.findOne({ email });
-    if (!foundProfile) {
+    const foundUser = await User.findOne({ email });
+    if (!foundUser) {
       return res.status(404).json({ error: "Incorrect email or password" });
     }
 
     const comparedPasswords = await bcrypt.compare(
       password,
-      foundProfile.password
+      foundUser.password
     );
     if (!comparedPasswords) {
       return res.status(400).json({ error: "Incorrect email or password" });
@@ -23,23 +22,15 @@ const authenticateUser = async (req, res, next) => {
 
     let roleSpecificDetails = {};
 
-    if (foundProfile.role === "user") {
-      const foundUser = await User.findOne({ profile: foundProfile._id });
-      if (!foundUser) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      roleSpecificDetails = { user: foundUser };
-    } else if (foundProfile.role === "store") {
-      const foundStore = await Store.findOne({ profile: foundProfile._id });
+    if (foundUser.role === "store") {
+      const foundStore = await Store.findOne({ user: foundUser._id });
       if (!foundStore) {
         return res.status(404).json({ error: "Store not found" });
       }
       roleSpecificDetails = { store: foundStore };
-    } else {
-      return res.status(400).json({ error: "Invalid role specified" });
     }
 
-    req.profile = foundProfile;
+    req.user = foundUser;
     req.roleSpecificDetails = roleSpecificDetails;
 
     next();

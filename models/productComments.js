@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const BlogCommentSchema = new Schema(
+const ProductCommentSchema = new Schema(
   {
     author: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    onBlog: {
+    onProduct: {
       type: Schema.Types.ObjectId,
-      ref: "Blog",
+      ref: "Product",
     },
     content: {
       type: String,
@@ -19,6 +19,6 @@ const BlogCommentSchema = new Schema(
   { timestamps: true }
 );
 
-const BlogComment = model("BlogComment", BlogCommentSchema);
+const ProductComment = model("ProductComment", ProductCommentSchema);
 
-module.exports = BlogComment;
+module.exports = ProductComment;
